@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/go-chi/chi/v5"
@@ -194,8 +195,15 @@ func main() {
 
 	mux := chi.NewRouter()
 
+	// Parse CORS origins from config (comma-separated)
+	corsOrigins := strings.Split(cfg.CorsOrigins, ",")
+	// Trim whitespace from each origin
+	for i, origin := range corsOrigins {
+		corsOrigins[i] = strings.TrimSpace(origin)
+	}
+
 	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   []string{"localhost", "127.0.0.1", "*"},
+		AllowedOrigins:   corsOrigins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,

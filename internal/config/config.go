@@ -52,6 +52,7 @@ type Configuration struct {
 	NetworkResolverFile         *string       `env:"ISSUER_RESOLVER_FILE"`
 	IssuerName                  string        `env:"ISSUER_ISSUER_NAME"`
 	IssuerLogo                  string        `env:"ISSUER_ISSUER_LOGO"`
+	CorsOrigins                string        `env:"ISSUER_CORS_ORIGINS" envDefault:"http://localhost:*,https://localhost:*,*"`
 	Database                    Database
 	Cache                       Cache
 	HTTPBasicAuth               HTTPBasicAuth
