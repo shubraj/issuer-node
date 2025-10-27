@@ -9,7 +9,7 @@ issuernode_ui_repository_image: privadoid/issuernode-ui
 issuernode_ui_repository_tag: latest
 uiPassword: password
 issuerUiInsecure: false
-issuerName: "My Issuer!"
+issuerName: "PRUUF Studio"
 ingressEnabled: true
 privateKey:
 namespace: issuer-node

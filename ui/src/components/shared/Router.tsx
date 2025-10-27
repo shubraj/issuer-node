@@ -1,4 +1,4 @@
-import { ComponentType } from "react";
+import { ComponentType, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { ConnectionDetails } from "src/components/connections/ConnectionDetails";
@@ -29,6 +29,7 @@ import { ImportSchema } from "src/components/schemas/ImportSchema";
 import { SchemaDetails } from "src/components/schemas/SchemaDetails";
 import { Schemas } from "src/components/schemas/Schemas";
 import { NotFound } from "src/components/shared/NotFound";
+import { useEnvContext } from "src/contexts/Env";
 import { useIdentityContext } from "src/contexts/Identity";
 import { Layout, ROUTES, RouteID } from "src/routes";
 import { ROOT_PATH } from "src/utils/constants";
@@ -64,6 +65,11 @@ const COMPONENTS: Record<RouteID, ComponentType> = {
 
 export function Router() {
   const { identifier } = useIdentityContext();
+  const env = useEnvContext();
+
+  useEffect(() => {
+    document.title = env.issuer.name;
+  }, [env.issuer.name]);
 
   const filteredRoutes = identifier
     ? Object.entries(ROUTES).filter(([, { path }]) => path !== ROUTES.onboarding.path)
