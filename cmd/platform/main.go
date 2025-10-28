@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/go-chi/chi/v5"
@@ -194,12 +195,37 @@ func main() {
 
 	mux := chi.NewRouter()
 
-	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   []string{"localhost", "127.0.0.1", "https://studio.pruuf.tech","http://studio.pruuf.tech","*"},
+	// Parse CORS origins from config (comma-separated)
+	corsOrigins := strings.Split(cfg.CorsOrigins, ",")
+	// Trim whitespace from each origin
+	var parsedOrigins []string
+	var allowAllOrigins bool
+	
+	for _, origin := range corsOrigins {
+		trimmedOrigin := strings.TrimSpace(origin)
+		if trimmedOrigin == "*" {
+			allowAllOrigins = true
+		} else if trimmedOrigin != "" {
+			parsedOrigins = append(parsedOrigins, trimmedOrigin)
+		}
+	}
+
+	corsOptions := cors.Options{
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,
-	})
+	}
+
+	if allowAllOrigins {
+		// When using wildcard, we can't use AllowCredentials for security reasons
+		// but we can allow all origins
+		corsOptions.AllowedOrigins = []string{"*"}
+		corsOptions.AllowCredentials = false
+	} else {
+		corsOptions.AllowedOrigins = parsedOrigins
+	}
+
+	corsMiddleware := cors.New(corsOptions)
 
 	mux.Use(
 		chiMiddleware.RequestID,
