@@ -198,24 +198,22 @@ func main() {
 	// Parse CORS origins from config (comma-separated)
 	corsOrigins := strings.Split(cfg.CorsOrigins, ",")
 	// Trim whitespace from each origin
-	for i, origin := range corsOrigins {
-		corsOrigins[i] = strings.TrimSpace(origin)
-	}
-
-	// Check if wildcard is in the list and handle it properly
-	allowAllOrigins := false
-	var filteredOrigins []string
+	var parsedOrigins []string
+	var allowAllOrigins bool
+	
 	for _, origin := range corsOrigins {
-		if origin == "*" {
+		trimmedOrigin := strings.TrimSpace(origin)
+		if trimmedOrigin == "*" {
 			allowAllOrigins = true
-		} else {
-			filteredOrigins = append(filteredOrigins, origin)
+		} else if trimmedOrigin != "" {
+			parsedOrigins = append(parsedOrigins, trimmedOrigin)
 		}
 	}
 
 	corsOptions := cors.Options{
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: true,
 	}
 
 	if allowAllOrigins {
@@ -224,8 +222,7 @@ func main() {
 		corsOptions.AllowedOrigins = []string{"*"}
 		corsOptions.AllowCredentials = false
 	} else {
-		corsOptions.AllowedOrigins = filteredOrigins
-		corsOptions.AllowCredentials = true
+		corsOptions.AllowedOrigins = parsedOrigins
 	}
 
 	corsMiddleware := cors.New(corsOptions)
