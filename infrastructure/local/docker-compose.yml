@@ -1,5 +1,8 @@
 services:
   ui:
+    build:
+      context: ../../ui
+      dockerfile: Dockerfile
     image: issuernode-ui:local
     ports:
       - "8088:80"
@@ -13,6 +16,9 @@ services:
       retries: 5
 
   api:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
     image: issuernode-api:local
     ports:
       - "3001:3001"
@@ -30,6 +36,9 @@ services:
     command: sh -c "sleep 4s && ./migrate && ./platform"
 
   notifications:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
     image: issuernode-api:local
     ports:
       - "3004:3004"
@@ -45,6 +54,9 @@ services:
       retries: 5
 
   pending_publisher:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
     image: issuernode-api:local
     ports:
       - "3005:3005"

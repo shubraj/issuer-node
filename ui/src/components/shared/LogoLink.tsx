@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 
-import IconLogo from "src/assets/privado-id-logo.svg?react";
 import { ROOT_PATH } from "src/utils/constants";
 
 export function LogoLink() {
   return (
     <Link to={ROOT_PATH}>
-      <IconLogo />
+      <img alt="PRUUF Logo" height={32} src="/images/pruuf-logo.png" width={120} />
     </Link>
   );
 }

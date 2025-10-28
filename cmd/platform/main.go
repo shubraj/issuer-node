@@ -202,12 +202,33 @@ func main() {
 		corsOrigins[i] = strings.TrimSpace(origin)
 	}
 
-	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   corsOrigins,
+	// Check if wildcard is in the list and handle it properly
+	allowAllOrigins := false
+	var filteredOrigins []string
+	for _, origin := range corsOrigins {
+		if origin == "*" {
+			allowAllOrigins = true
+		} else {
+			filteredOrigins = append(filteredOrigins, origin)
+		}
+	}
+
+	corsOptions := cors.Options{
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
-		AllowCredentials: true,
-	})
+	}
+
+	if allowAllOrigins {
+		// When using wildcard, we can't use AllowCredentials for security reasons
+		// but we can allow all origins
+		corsOptions.AllowedOrigins = []string{"*"}
+		corsOptions.AllowCredentials = false
+	} else {
+		corsOptions.AllowedOrigins = filteredOrigins
+		corsOptions.AllowCredentials = true
+	}
+
+	corsMiddleware := cors.New(corsOptions)
 
 	mux.Use(
 		chiMiddleware.RequestID,
