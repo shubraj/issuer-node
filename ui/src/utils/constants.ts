@@ -102,7 +102,7 @@ export const DOCS_URL = "https://docs.privado.id";
 
 export const SCHEMAS_DOCS_URL = "https://docs.privado.id/docs/category/schemas";
 
-export const DISPLAY_METHOD_DOCS_URL = "https://docs.privado.id/docs/issuer/display-method";
+export const DISPLAY_METHOD_DOCS_URL = "https://editor.pruuf.tech/docs";
 
 export const IPFS_PUBLIC_GATEWAY_CHECKER_URL = "https://ipfs.github.io/public-gateway-checker";
 
